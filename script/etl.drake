@@ -1,0 +1,30 @@
+; Environments
+HDFS_EXEC=/usr/local/hadoop/bin/hdfs
+DATA_DIR="../data"
+HDFS_DATA_DIR="/tmp/web-data-analytics"
+SCALDRB_EXE=$[HOME]/local/bin/scald.rb
+
+; Methods
+file() [eval]
+  echo "$CODE" | tee $OUTPUT | nl
+
+scaldrb_local() [eval]
+  $[SCALDRB_EXE] --local $INPUT "$CODE"
+
+scaldrb() [eval]
+  $[SCALDRB_EXE] $INPUT "$CODE"
+
+; import data
+Import.scala <- [method:file method-mode:append]
+  import com.twitter.scalding._
+  class Import(args : Args) extends Job(args) {
+    val textSource = TextLine(args("input"))
+    val lines: TypedPipe[String] = TypedPipe.from[String](textSource) 
+    lines.write(TypedTsv[String](args("output")))
+  }
+
+%import_local <- Import.scala [method:scaldrb_local method-mode:append]
+  --input "$[DATA_DIR]/excite/excite-small.log" --output "../target/output"  
+
+%import <- Import.scala [method:scaldrb method-mode:append]
+  --input "$[HDFS_DATA_DIR]/data/excite/excite-small.log" --output "$[HDFS_DATA_DIR]/output/excite"  
