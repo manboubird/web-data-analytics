@@ -1,0 +1,46 @@
+; Environments
+HDFS_EXEC=/usr/local/hadoop/bin/hdfs
+DATA_DIR="../data"
+HDFS_DATA_DIR="/tmp/web-data-analytics"
+
+; Methods
+file() [eval]
+  echo "$CODE" | tee $OUTPUT | nl
+
+download()
+  for f in $INPUTS; do 
+    source $f
+    if [ -z "$DIR" -o -z "$URL" ]; then
+      echo "params are not set. DIR=$DIR, URL=$URL"
+    else 
+      mkdir -p $DIR
+      if [ "${URL##*.}" == "zip" ]; then
+        echo "Download a file into $DIR from URL: $URL ..."
+        TMP_FILE="tmp.`basename $f`.zip"
+        wget -qO- -O "$TMP_FILE" $URL && unzip -d "$DIR/" $TMP_FILE && rm $TMP_FILE
+      else
+        echo "Download a file into $DIR/`basename $URL` from URL: $URL ..."
+        wget -O "$DIR/`basename $URL`" $URL
+      fi
+    fi
+  done
+
+; downlaod data
+;
+; splunk tutorial data: http://docs.splunk.com/Documentation/Splunk/6.2.1/PivotTutorial/GetthetutorialdataintoSplunk#Download_the_sample_data_file
+splunk.env, %env <- [method:file method-mode:append]
+  DIR=$[DATA_DIR]/splunk
+  URL=http://docs.splunk.com/images/Tutorial/tutorialdata.zip
+
+; pig tutorial data
+excite.env, %env <- [method:file method-mode:append]
+  DIR=$[DATA_DIR]/excite
+  URL=https://raw.githubusercontent.com/apache/pig/release-0.14.0/tutorial/data/excite-small.log
+
+%download <- excite.env, splunk.env [method:download method-mode:append]
+
+; hdfs upload
+%upload <- %download
+ $[HDFS_EXEC] dfs -mkdir $[HDFS_DATA_DIR]/
+ $[HDFS_EXEC] dfs -copyFromLocal "$[DATA_DIR]" $[HDFS_DATA_DIR]/
+

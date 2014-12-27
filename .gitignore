@@ -1,0 +1,18 @@
+*.class
+*.log
+*.swp
+
+# ide specific
+.idea*
+
+# sbt specific
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# intelliJ specific
+.idea
+.idea_modules
