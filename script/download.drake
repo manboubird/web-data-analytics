@@ -37,7 +37,7 @@ excite.env, %env <- [method:file method-mode:append]
   DIR=$[DATA_DIR]/excite
   URL=https://raw.githubusercontent.com/apache/pig/release-0.14.0/tutorial/data/excite-small.log
 
-%download <- excite.env, splunk.env [method:download method-mode:append]
+$[DATA_DIR]/excite, $[DATA_DIR]/splunk, %download <- excite.env, splunk.env [method:download method-mode:append]
 
 ; hdfs upload
 %upload <- %download
