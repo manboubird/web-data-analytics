@@ -16,3 +16,6 @@ project/plugins/project/
 # intelliJ specific
 .idea
 .idea_modules
+
+# drake specific
+.drake
