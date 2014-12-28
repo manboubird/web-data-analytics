@@ -10,3 +10,10 @@ class WordCountJob(args : Args) extends Job(args) {
 
   def tokenize(text: String): Array[String] = text.toLowerCase.replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+")
 }
+
+object WordCountJob extends JobRunner {
+  override val className = classOf[WordCountJob].getName
+  override val localModeArgs = Array("--local",
+    "--input", "data/excite/excite-small.log",
+    "--output", "target/WordCountJob/output")
+}

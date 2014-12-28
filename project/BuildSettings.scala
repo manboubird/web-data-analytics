@@ -16,8 +16,7 @@ object BuildSettings {
 
   lazy val sbtAssemblySettings = assemblySettings ++ Seq(
 
-
-    jarName in assembly := { name.value + "-" + version.value + ".jar" },
+    jarName in assembly := { s"${name.value}-${version.value}.jar" },
 
     // Uncomment if you don't want to run all the tests before building assembly
     // test in assembly := {},
