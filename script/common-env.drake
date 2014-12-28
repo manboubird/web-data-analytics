@@ -1,0 +1,15 @@
+;;
+; Common environments
+;;
+; load local environment config
+; %include $[HOME]/.drake/common-env.drake
+; or fill out below
+HDFS_EXEC:=""
+HADOOP_EXEC:=""
+SCALDRB_EXEC:=""
+;;
+; project specific config
+DATA_DIR_LOCAL=../data
+DATA_DIR_HDFS=/tmp/web-data-analytics/data
+ROOT_DIR_HDFS=/tmp/web-data-analytics
+
