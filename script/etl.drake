@@ -1,5 +1,5 @@
 ; Environments
-%include ./common-env.drake
+%include common-env.drake
 
 BASE=etl
 
@@ -19,11 +19,6 @@ scaldrb()
     echo $[SCALDRB_EXEC] $SCALA_FILE --input $ARG_INPUT --output $ARG_OUTPUT
     $[SCALDRB_EXEC] $SCALA_FILE --input $ARG_INPUT --output $ARG_OUTPUT
   fi
-
-hadoop_jar()
-  source $INPUT
-  echo $[HADOOP_EXEC] jar $STANDALONE_JAR $JOB_CLASS --hdfs --input $ARG_INPUT --output $ARG_OUTPUT
-  $[HADOOP_EXEC] jar $STANDALONE_JAR $JOB_CLASS --hdfs --input $ARG_INPUT --output $ARG_OUTPUT
 
 ;;
 ; Ad-hoc job with Scalding scald.rb script
@@ -54,19 +49,4 @@ import-env.sh <- Import.scala [method:file method-mode:append]
   ARG_OUTPUT=$[DATA_DIR_HDFS]/output/excite
 
 %import <- import-env.sh [method:scaldrb]
-
-;;
-; Scalding standalone jar job with hadoop command
-;;
-
-STANDALONE_JAR=../target/scala-2.10/web-data-analytics-0.0.1.jar
-
-; standalone jar is required. run 'sbt assembly'.
-wordCountJob-env.sh <- !$[STANDALONE_JAR] [method:file method-mode:append]
-  STANDALONE_JAR=$[STANDALONE_JAR]
-  JOB_CLASS=com.knownstylenolife.hadoop.scalding.WordCountJob
-  ARG_INPUT=$[DATA_DIR_HDFS]/excite/excite-small.log
-  ARG_OUTPUT=$[DATA_DIR_HDFS]/output/wordcount
-
-%wordcount <- wordCountJob-env.sh [method:hadoop_jar]
 

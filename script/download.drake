@@ -1,5 +1,5 @@
 ; Environments
-%include ./common-env.drake
+%include common-env.drake
 
 BASE=download
 

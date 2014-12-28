@@ -1,0 +1,32 @@
+; Environments
+%include common-env.drake
+
+BASE=aggregation
+
+;;
+; Methods
+;;
+
+file() [eval]
+  echo "$CODE" | tee $OUTPUT | nl
+
+hadoop_jar()
+  source $INPUT
+  echo $[HADOOP_EXEC] jar $STANDALONE_JAR $JOB_CLASS --hdfs --input $ARG_INPUT --output $ARG_OUTPUT
+  $[HADOOP_EXEC] jar $STANDALONE_JAR $JOB_CLASS --hdfs --input $ARG_INPUT --output $ARG_OUTPUT
+
+;;
+; Scalding standalone jar job with hadoop command
+;;
+
+; standalone jar is required. run 'sbt assembly'.
+STANDALONE_JAR=../target/scala-2.10/web-data-analytics-0.0.1.jar
+
+wordCountJob-env.sh <- !$[STANDALONE_JAR] [method:file method-mode:append]
+  STANDALONE_JAR=$[STANDALONE_JAR]
+  JOB_CLASS=com.knownstylenolife.hadoop.scalding.WordCountJob
+  ARG_INPUT=$[DATA_DIR_HDFS]/excite/excite-small.log
+  ARG_OUTPUT=$[DATA_DIR_HDFS]/output/wordcount
+
+%wordcount <- wordCountJob-env.sh [method:hadoop_jar]
+

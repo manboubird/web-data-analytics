@@ -2,7 +2,9 @@
 ; Sequential job execution command on cluster:
 ;   drake -w ./script/webDataAnalytics.drake %download_all %upload %import %wordcount
 ;
-%include ./common-env.drake
+%include common-env.drake
 
 %call download.drake
 %call etl.drake
+%call aggregation.drake
+
