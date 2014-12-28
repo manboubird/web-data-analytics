@@ -1,6 +1,8 @@
 ; Environments
 %include ./common-env.drake
 
+BASE=download
+
 ;;
 ; Methods
 ;;

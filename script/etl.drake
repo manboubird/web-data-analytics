@@ -1,6 +1,8 @@
 ; Environments
 %include ./common-env.drake
 
+BASE=etl
+
 ;;
 ; Methods
 ;;
@@ -60,7 +62,7 @@ import-env.sh <- Import.scala [method:file method-mode:append]
 STANDALONE_JAR=../target/scala-2.10/web-data-analytics-0.0.1.jar
 
 ; standalone jar is required. run 'sbt assembly'.
-wordCountJob-env.sh <- $[STANDALONE_JAR] [method:file method-mode:append]
+wordCountJob-env.sh <- !$[STANDALONE_JAR] [method:file method-mode:append]
   STANDALONE_JAR=$[STANDALONE_JAR]
   JOB_CLASS=com.knownstylenolife.hadoop.scalding.WordCountJob
   ARG_INPUT=$[DATA_DIR_HDFS]/excite/excite-small.log
