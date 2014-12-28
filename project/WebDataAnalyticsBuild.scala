@@ -18,7 +18,7 @@ object WebDataAnalyticsBuild extends Build {
         Libraries.hadoopCore,
         Libraries.hadoopCommon,
         Libraries.hadoopClient,
-        Libraries.specs2
+        Libraries.scalaTest
       )
     )
 }

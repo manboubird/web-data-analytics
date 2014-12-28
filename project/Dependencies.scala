@@ -17,7 +17,7 @@ object Dependencies {
     val hadoopCore   = "2.0.0-mr1-cdh4.5.0"
     val hadoopCommon = "2.0.0-cdh4.5.0"
     val hadoopClient = "2.0.0-mr1-cdh4.5.0"
-    val specs2       = "2.3.11"//"1.12.3" // -> "1.13" when we bump to Scala 2.10.0
+    val scalaTest    = "2.2.1"
   }
 
   object Libraries {
@@ -25,7 +25,6 @@ object Dependencies {
     val hadoopCore   = "org.apache.hadoop"          %  "hadoop-core"          % V.hadoopCore   % "provided"
     val hadoopCommon = "org.apache.hadoop"          %  "hadoop-common"        % V.hadoopCommon % "provided"
     val hadoopClient = "org.apache.hadoop"          %  "hadoop-client"        % V.hadoopClient % "provided"
-    // test
-    val specs2       = "org.specs2"                 %% "specs2"               % V.specs2       % "test"
+    val scalaTest    = "org.scalatest"              %% "scalatest"            % V.scalaTest    % "test"
   }
 }
