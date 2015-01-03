@@ -14,7 +14,7 @@ package object etl {
    */
   type Validated[A] = ValidationNel[String, A]
 
-  type ValidatedApacheLogData = Validated[AccessLogData]
+  type ValidatedAccessLogData = Validated[AccessLogData]
 
   type ValidatedDateTime = Validated[DateTime]
 

@@ -34,9 +34,9 @@ class AccessLogEtlJob(args : Args) extends Job(args) {
  
   private val TIME_FORMAT_PATTERN = "dd/MMM/yyyy:HH:mm:ss"
 
-  def process(line:String): ValidatedApacheLogData = {
+  def process(line:String): ValidatedAccessLogData = {
 
-    def build(time:String, host:String, reqMethod:String, reqParam:String, status:String, referer:String, ua:String, ext: Option[String]): ValidatedApacheLogData = {
+    def build(time:String, host:String, reqMethod:String, reqParam:String, status:String, referer:String, ua:String, ext: Option[String]): ValidatedAccessLogData = {
 
       val validatedTime = ValidationUtils.validateTime(time, TIME_FORMAT_PATTERN)
       val validatedHost = ValidationUtils.validateIp(host)
@@ -70,8 +70,8 @@ class AccessLogEtlJob(args : Args) extends Job(args) {
   }
   
  val bad = common
-    .filter('all) { f: ValidatedApacheLogData => f.isFailure }
-    .map('all -> 'errors) { f: ValidatedApacheLogData => 
+    .filter('all) { f: ValidatedAccessLogData => f.isFailure }
+    .map('all -> 'errors) { f: ValidatedAccessLogData => 
       f.swap.toOption match { 
         case Some(errs) => errs
         case None => throw new RuntimeException // it's impossible to reach here
@@ -84,7 +84,7 @@ class AccessLogEtlJob(args : Args) extends Job(args) {
     .write(badOutput)
     
   val good = common
-    .filter('all) { f: ValidatedApacheLogData => f.isSuccess }
+    .filter('all) { f: ValidatedAccessLogData => f.isSuccess }
     .project('line)
     .write(goodOutput)
 
