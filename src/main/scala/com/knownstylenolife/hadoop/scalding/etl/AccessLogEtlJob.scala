@@ -77,8 +77,8 @@ class AccessLogEtlJob(args : Args) extends Job(args) {
         case None => throw new RuntimeException // it's impossible to reach here
       }
     }
-    .mapTo(('line, 'errors) -> 'json) { o: (String, NonEmptyList[String]) =>
-      val (line, errors) = o
+    .mapTo(('line, 'errors) -> 'json) { f: (String, NonEmptyList[String]) =>
+      val (line, errors) = f
       BadLine(line, errors.toList).toJson
     }   
     .write(badOutput)
