@@ -4,9 +4,9 @@
 ; load local environment config
 ; %include $[HOME]/.drake/common-env.drake
 ; or fill out below
-HDFS_EXEC:=""
-HADOOP_EXEC:=""
-SCALDRB_EXEC:=""
+HDFS_EXEC:=hdfs
+HADOOP_EXEC:=hadoop
+SCALDRB_EXEC:=scald.rb
 ;;
 ; project specific config
 DATA_DIR_LOCAL=../data
