@@ -18,6 +18,13 @@ object WebDataAnalyticsBuild extends Build {
         Libraries.hadoopCore,
         Libraries.hadoopCommon,
         Libraries.hadoopClient,
+        Libraries.jodaTime,
+        Libraries.jodaConvert,
+        // scala
+        Libraries.scalaz7,
+        Libraries.json4sJackson,
+        Libraries.json4sScalaz,
+        // test
         Libraries.scalaTest
       )
     )

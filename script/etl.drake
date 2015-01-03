@@ -50,3 +50,9 @@ import-env.sh <- Import.scala [method:file method-mode:append]
 
 %import <- import-env.sh [method:scaldrb]
 
+; standalone jar is required. run 'sbt assembly'.
+STANDALONE_JAR=../target/scala-2.10/web-data-analytics-0.0.1.jar
+
+%AccessLogEtlJob_local <- !$[STANDALONE_JAR]
+  $[HADOOP_EXEC] jar $[STANDALONE_JAR] com.knownstylenolife.hadoop.scalding.etl.AccessLogEtlJob --local --inDir $[DATA_DIR_LOCAL]/splunk/www1/access.log --outDir $[DATA_DIR_LOCAL]/output/AccessLogEtlJob/out --badDir $[DATA_DIR_LOCAL]/output/AccessLogEtlJob/bad --exceptionDir $[DATA_DIR_LOCAL]/output/AccessLogEtlJob/exception
+
