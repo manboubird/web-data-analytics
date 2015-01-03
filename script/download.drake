@@ -46,8 +46,8 @@ excite-env.sh <- [method:file method-mode:append]
   DIR=$[DATA_DIR_LOCAL]/excite
   URL=https://raw.githubusercontent.com/apache/pig/release-0.14.0/tutorial/data/excite-small.log
 
-splunk <- splunk-env.sh [method:download method-mode:append]
-excite <- excite-env.sh [method:download method-mode:append]
+%splunk <- splunk-env.sh [method:download method-mode:append]
+%excite <- excite-env.sh [method:download method-mode:append]
 
 %download_all <- splunk-env.sh, excite-env.sh [method:download method-mode:append]
 

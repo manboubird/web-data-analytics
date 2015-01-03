@@ -8,3 +8,6 @@
 %call etl.drake
 %call aggregation.drake
 
+%init <-
+  echo "Create drake base directories"
+  mkdir -p ./{download,etl,aggregation}
