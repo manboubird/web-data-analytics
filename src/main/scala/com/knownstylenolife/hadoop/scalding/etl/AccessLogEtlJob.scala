@@ -39,7 +39,7 @@ class AccessLogEtlJob(args : Args) extends Job(args) {
     def build(time:String, host:String, reqMethod:String, reqParam:String, status:String, referer:String, ua:String, ext: Option[String]): ValidatedApacheLogData = {
 
       val validatedTime = ValidationUtils.validateTime(time, TIME_FORMAT_PATTERN)
-      val validatedHost = ValidationUtils.validatedIp(host)
+      val validatedHost = ValidationUtils.validateIp(host)
 
       (validatedTime |@| validatedHost) { (t, h) =>
         new AccessLogData(
