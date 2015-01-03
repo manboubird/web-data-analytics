@@ -21,7 +21,7 @@ object ValidationUtils {
 
   def validateIp(ip: String): ValidatedString = ip match {
     case IPADDRESS_PATTERN(s) => s.success 
-    case _ => "Illegal host: [%s]".format(ip).failureNel
+    case _ => "Illegal IP: [%s]".format(ip).failureNel
   }
 
 }
