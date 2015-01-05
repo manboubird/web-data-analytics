@@ -36,20 +36,13 @@ download()
 ; downlaod data
 ;;
 
-; splunk tutorial data: http://docs.splunk.com/Documentation/Splunk/6.2.1/PivotTutorial/GetthetutorialdataintoSplunk#Download_the_sample_data_file
-splunk-env.sh <- [method:file method-mode:append]
-  DIR=$[DATA_DIR_LOCAL]/splunk
-  URL=http://docs.splunk.com/images/Tutorial/tutorialdata.zip
+; by-name download
+%download_$[NAME] <- !repo/$[NAME]-env.sh [method:download]
 
-; pig tutorial data
-excite-env.sh <- [method:file method-mode:append]
-  DIR=$[DATA_DIR_LOCAL]/excite
-  URL=https://raw.githubusercontent.com/apache/pig/release-0.14.0/tutorial/data/excite-small.log
+%splunk <- !repo/splunk-env.sh [method:download]
+%excite <- !repo/excite-env.sh [method:download]
 
-%splunk <- splunk-env.sh [method:download method-mode:append]
-%excite <- excite-env.sh [method:download method-mode:append]
-
-%download_all <- splunk-env.sh, excite-env.sh [method:download method-mode:append]
+%download_all <- !repo/splunk-env.sh, !repo/excite-env.sh [method:download]
 
 ; hdfs upload
 %upload <- %download_all
