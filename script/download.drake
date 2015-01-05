@@ -1,7 +1,16 @@
+;
+; Download $[NAME] dataset job by name of files in repo directory. Ex. NAME=excite
+;
+;  drake -w script/download.drake -v NAME=$[NAME] %download_$[NAME]
+;
+
 ; Environments
 %include common-env.drake
 
 BASE=download
+
+; default download dataset name
+NAME:=excite
 
 ;;
 ; Methods
@@ -13,6 +22,7 @@ file() [eval]
 download()
   for f in $INPUTS; do 
     source $f
+    [ -z "$DIR" -a -n "$NAME" ] && DIR=../data/$NAME
     if [ -z "$DIR" -o -z "$URL" ]; then
       echo "params are not set. DIR=$DIR, URL=$URL"
     else 
@@ -24,9 +34,19 @@ download()
           echo "Download a file into $DIR from URL: $URL ..."
           TMP_FILE="tmp.`basename $f`.zip"
           wget -qO- -O "$TMP_FILE" $URL && unzip -d "$DIR/" $TMP_FILE && rm $TMP_FILE
+        elif [ "${URL##*.}" == "7z" ]; then
+          echo "Download a file into $DIR from URL: $URL ..."
+          TMP_FILE="tmp.`basename $f`.7z"
+          wget -qO- -O "$TMP_FILE" $URL && 7z x $TMP_FILE -o"$DIR/" && rm $TMP_FILE
+        elif [ "${URL##*.}" == "gz" ]; then
+          echo "Download a file into $DIR from URL: $URL ..."
+          TMP_FILE="tmp.`basename $f`.gz"
+          FILE="tmp.`basename $f`"
+          wget -qO- -O "$TMP_FILE" $URL && gunzip $TMP_FILE && mv $FILE "$DIR/"
         else
           echo "Download a file into $DIR/`basename $URL` from URL: $URL ..."
-          wget -O "$DIR/`basename $URL`" $URL
+          filename=$(basename "$URL" | sed 's/[\?=%]/_/g')
+          wget -O "$DIR/$filename" $URL
         fi
       fi
     fi
