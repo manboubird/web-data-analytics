@@ -22,6 +22,10 @@ file() [eval]
 download()
   for f in $INPUTS; do 
     source $f
+    if [ "$LOGIN" == "required" ]; then
+      echo "Login is required to download the dataset. Skip download $NAME"
+      continue
+    fi
     [ -z "$DIR" -a -n "$NAME" ] && DIR=../data/$NAME
     if [ -z "$DIR" -o -z "$URL" ]; then
       echo "params are not set. DIR=$DIR, URL=$URL"
