@@ -20,18 +20,29 @@ file() [eval]
   echo "$CODE" | tee $OUTPUT | nl
 
 download()
-  for f in $INPUTS; do 
+  if [ "$[DOWNLOAD_LIST_FILE]" == "`basename $INPUT`" ]; then
+    SOURCE_FILES=`cat $INPUT | sed -e 's/$/-env.sh/' | sed -e 's:^:$[DATA_REPO_DIR]/:'`
+  else 
+    SOURCE_FILES=$INPUTS
+  fi
+  for f in ${SOURCE_FILES[@]}; do 
+    for v in NAME DIR NAME URL LOGIN; do
+      unset "$v" 
+    done
     source $f
     if [ "$LOGIN" == "required" ]; then
       echo "Login is required to download the dataset. Skip download $NAME"
+      echo
       continue
     fi
-    [ -z "$DIR" -a -n "$NAME" ] && DIR=../data/$NAME
+    [ -z "$DIR" -a -n "$NAME" ] && DIR=$[DATA_DIR_LOCAL]/$NAME
     if [ -z "$DIR" -o -z "$URL" ]; then
       echo "params are not set. DIR=$DIR, URL=$URL"
     else 
       if [ -d "$DIR" ]; then
         echo "The directory exists. Skip. DIR=$DIR, URL=$URL"
+        echo
+        continue
       else
         mkdir -p $DIR
         if [ "${URL##*.}" == "zip" ]; then
