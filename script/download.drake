@@ -11,6 +11,8 @@ BASE=download
 
 ; default download dataset name
 NAME:=excite
+DATA_REPO_DIR:=./repo
+DOWNLOAD_LIST_FILE:=download_list_file
 
 ;;
 ; Methods
@@ -64,19 +66,23 @@ download()
         fi
       fi
     fi
+    echo "Download is completed"
+    echo
   done
 
 ;;
 ; downlaod data
 ;;
 
+; list data repository
+repo_list <-
+  find $[DATA_REPO_DIR] -type f -name '*-env.sh' | gawk -F/ '{print $NF}' | gawk '{gsub(/-env\.sh/, "")} 1' | tee $OUTPUT
+
 ; by-name download
-%download_$[NAME] <- !repo/$[NAME]-env.sh [method:download]
+%download_$[NAME] <- !$[DATA_REPO_DIR]/$[NAME]-env.sh [method:download]
 
-%splunk <- !repo/splunk-env.sh [method:download]
-%excite <- !repo/excite-env.sh [method:download]
-
-%download_all <- !repo/splunk-env.sh, !repo/excite-env.sh [method:download]
+; download data listed in the file named 'download_list_file'
+%download_from_list <- !$[DOWNLOAD_LIST_FILE] [method:download]
 
 ; hdfs upload
 %upload <- %download_all
