@@ -44,9 +44,8 @@ download()
           wget -qO- -O "$TMP_FILE" $URL && 7z x $TMP_FILE -o"$DIR/" && rm $TMP_FILE
         elif [ "${URL##*.}" == "gz" ]; then
           echo "Download a file into $DIR from URL: $URL ..."
-          TMP_FILE="tmp.`basename $f`.gz"
-          FILE="tmp.`basename $f`"
-          wget -qO- -O "$TMP_FILE" $URL && gunzip $TMP_FILE && mv $FILE "$DIR/"
+          TMP_FILE=`basename "$URL"`
+          wget -qO- -O "$TMP_FILE" $URL && gunzip $TMP_FILE && mv "${TMP_FILE%.*}" "$DIR/"
         else
           echo "Download a file into $DIR/`basename $URL` from URL: $URL ..."
           filename=$(basename "$URL" | sed 's/[\?=%]/_/g')
