@@ -1,0 +1,36 @@
+; Environments
+%include common-env.drake
+
+BASE=etl
+
+;;
+; Methods
+;;
+
+file() [eval]
+  echo "$CODE" | tee $OUTPUT | nl
+
+hive()
+  $[HIVE_EXEC] -f $INPUT
+
+;;
+;  hive table data load
+;;
+
+; schema definitions
+excite_create_table.hql <- [method:file method-mode:append]
+  CREATE TABLE IF NOT EXISTS excite_log(dt STRING, ts STRING, sid STRING, type STRING, ext ARRAY<STRING>) ROW FORMAT delimited fields terminated by '\t'; 
+  CREATE TABLE IF NOT EXISTS excite_act(ts STRING, sid STRING, ext ARRAY<STRING>) PARTITIONED BY(dt STRING, type STRING) STORED AS SEQUENCEFILE; 
+
+; transform excite log. Add type and date
+excite_load_data, %excite_load_data_gen <- !$[DATA_DIR_LOCAL]/excite/excite-small.log
+  cat $INPUT | gawk '{ printf("%s\t%s %s\t%s\tsearch\t%s\n", strftime("2013-%m-%d",$2), strftime("2013-%m-%d",$2), strftime("%H:%M:%S",$2), $1, $3) }' | sort -nr > $OUTPUT 
+
+; load data into tables
+excite_load_data.hql <- [method:file method-mode:append] 
+  LOAD DATA LOCAL INPATH '$[BASE]/excite_load_data' INTO TABLE excite_log;
+  set hive.exec.dynamic.partition.mode=nonstrict;
+  INSERT OVERWRITE TABLE excite_act PARTITION(dt, type) SELECT ts, sid, ext, dt, type FROM excite_log;
+
+%excite_load_data <- excite_load_data.hql, %excite_load_data_gen [method:hive]
+

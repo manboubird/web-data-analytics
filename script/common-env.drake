@@ -6,6 +6,7 @@
 ; or fill out below
 HDFS_EXEC:=hdfs
 HADOOP_EXEC:=hadoop
+HIVE_EXEC:=hive
 SCALDRB_EXEC:=scald.rb
 ;;
 ; project specific config
